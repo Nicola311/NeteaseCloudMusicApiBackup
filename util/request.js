@@ -9,10 +9,16 @@ const fs = require('fs')
 const path = require('path')
 const tmpPath = require('os').tmpdir()
 const { cookieToJson, cookieObjToString, toBoolean } = require('./index')
-const anonymous_token = fs.readFileSync(
-  path.resolve(tmpPath, './anonymous_token'),
-  'utf-8',
-)
+let anonymous_token = '';
+try {
+  anonymous_token = fs.readFileSync(
+    path.resolve(tmpPath, './anonymous_token'),
+    'utf-8',
+  );
+} catch (e) {
+  // 在 Vercel 等环境上找不到文件时，跳过异常，使用空值
+  console.log('读取 anonymous_token 失败，忽略该错误', e.message);
+}
 const { URLSearchParams, URL } = require('url')
 const { APP_CONF } = require('../util/config.json')
 // request.debug = true // 开启可看到更详细信息
